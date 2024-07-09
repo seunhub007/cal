@@ -39,43 +39,27 @@ jobs:
         run: |
             docker push seun007/cal:${{ env.APP_VERSION }}
 
-      - name: "Install Minikube"
-        run: |
-          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-          sudo install minikube /usr/local/bin/
     
-      - name: "Start Minikube"
-        run: |
-          sudo minikube start --driver=none
-          sudo minikube status
-      
-          - name: "Configure kubectl to use Minikube context"
-          run: |
-            sudo minikube kubectl -- get po -A
-  
-      - name: "Install Helm"
-        run: |
-          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-  
-      - name: "Add Helm stable repository"
-        run: |
-          helm repo add stable https://charts.helm.sh/stable
-          helm repo update     
+      - name: start minikube
+        id: minikube
+        uses: medyagh/setup-minikube@latest
+
     
-     
+      - name: Get Minikube status
+        run: minikube status
     
-    #   - name: Get cluster info
-    #     run: kubectl get nodes
+      - name: Get cluster info
+        run: kubectl get nodes
     
-    #   -  name: Get Kubernetes pods
-    #      run: |
-    #         kubectl apply -f caldeploy.yaml
-    #         kubectl apply -f calsvc.yaml
-    #         kubectl get pods
-    #         kubectl get svc
+      -  name: Get Kubernetes pods
+         run: |
+            kubectl apply -f caldeploy.yaml
+            kubectl apply -f calsvc.yaml
+            kubectl get pods -A
+            kubectl get svc
     
-    #   - name: Get Minikube IP
-    #     run: echo ${{ steps.minikube.outputs.ip }}
+      - name: Get Minikube IP
+        run: echo ${{ steps.minikube.outputs.ip }}
 
   deploy:
     runs-on: ubuntu-latest
