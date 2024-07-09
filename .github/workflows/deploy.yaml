@@ -60,3 +60,18 @@ jobs:
     
       - name: Get Minikube IP
         run: echo ${{ steps.minikube.outputs.ip }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+     - uses: actions/checkout@v3
+     - name: install helm chart
+       uses: BlindfoldedSurgery/github-action-helm@v0.3.0
+       with:
+        subcommand: upgrade
+        ref: .
+        release_name: tested
+        # namespace: testns
+        atomic: true
+        install: true
+        kubeconfig: ${{ secrets.KUBECONFIG_RAW }}   
