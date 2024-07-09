@@ -39,4 +39,24 @@ jobs:
         run: |
             docker push seun007/cal:${{ env.APP_VERSION }}
 
-      
+      - name: Start Minikube
+        id: minikube
+        uses: hiberbee/github-action-minikube@latest
+        with:
+            profile: github
+    
+      - name: Get Minikube status
+        run: minikube status
+    
+      - name: Get cluster info
+        run: kubectl get nodes
+    
+      -  name: Get Kubernetes pods
+         run: |
+            kubectl apply -f caldeploy.yaml
+            kubectl apply -f calsvc.yaml
+            kubectl get pods
+            kubectl get svc
+    
+      - name: Get Minikube IP
+        run: echo ${{ steps.minikube.outputs.ip }}
