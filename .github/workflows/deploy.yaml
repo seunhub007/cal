@@ -61,17 +61,10 @@ jobs:
       - name: Get Minikube IP
         run: echo ${{ steps.minikube.outputs.ip }}
 
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-     - uses: actions/checkout@v3
-     - name: install helm chart
-       uses: BlindfoldedSurgery/github-action-helm@v0.3.0
-       with:
-        subcommand: upgrade
-        ref: .
-        release_name: tested
-        # namespace: testns
-        # atomic: true
-        install: true
-        kubeconfig: ${{ secrets.KUBECONFIG_RAW }}   
+      - name: Install helm
+        run: |
+         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+         chmod 700 get_helm.sh
+         ./get_helm.sh  
+         helm repo add stable https://charts.helm.sh/stable
+         helm repo update 
