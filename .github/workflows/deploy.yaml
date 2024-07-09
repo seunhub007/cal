@@ -72,6 +72,6 @@ jobs:
         ref: .
         release_name: tested
         # namespace: testns
-        atomic: true
+        # atomic: true
         install: true
         kubeconfig: ${{ secrets.KUBECONFIG_RAW }}   
