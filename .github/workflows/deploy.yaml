@@ -40,7 +40,7 @@ jobs:
             docker push seun007/cal:${{ env.APP_VERSION }}
 
     
-      - name: start minikube
+      - name: starting minikube
         id: minikube
         uses: medyagh/setup-minikube@latest
 
