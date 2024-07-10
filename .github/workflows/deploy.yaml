@@ -63,3 +63,27 @@ jobs:
       - name: "install Helm"
         uses: azure/setup-helm@v4.2.0
         id: install-helm 
+
+      - name: Create Helm chart
+        run: |
+          helm create mychart
+
+      - name: "Delete Templates"
+        run: |
+          rm -rf mychart/templates/tests/*
+          rm -rf mychart/templates/NOTES.txt
+          rm -rf mychart/templates/deployment.yaml
+          rm -rf mychart/templates/service.yaml
+          rm -rf mychart/templates/ingress.yaml
+          rm -rf mychart/templates/hpa.yaml
+          rm -rf mychart/templates/serviceaccount.yaml
+          rm -rf mychart/templates/_helpers.tpl
+
+      - name: "Add to Templates"
+        run: |
+          cp caldeploy.yaml mychart/templates
+          cp calsvc.yaml mychart/templates
+
+      - name: "deploy helm"
+        run: |
+          helm upgrade --install mychart mychart --set image.tag=${{ env.APP_VERSION }}
