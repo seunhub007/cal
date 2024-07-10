@@ -38,35 +38,27 @@ jobs:
       - name: "Push the image to docker hub" 
         run: |
             docker push seun007/cal:${{ env.APP_VERSION }}
+       
+            - name: "Setup AWS"
+            uses: aws-actions/configure-aws-credentials@v4
+            with:
+              aws-region: "us-east-1"
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    
-      - name: starting minikube
-        id: minikube
-        uses: medyagh/setup-minikube@latest
-
-    
-      - name: Get Minikube status
-        run: minikube status
-    
-      - name: Get cluster info
-        run: kubectl get nodes
-    
-      -  name: Get Kubernetes pods
-         run: |
-            kubectl apply -f caldeploy.yaml
-            kubectl apply -f calsvc.yaml
-            kubectl get pods -A
-            kubectl get svc
-    
-      - name: Get Minikube IP
-        run: echo ${{ steps.minikube.outputs.ip }}
-
-      - name: Install helm
+      - name: "Connect to the cluster"
         run: |
-         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-         chmod 700 get_helm.sh
-         ./get_helm.sh  
-         helm repo add stable https://charts.helm.sh/stable
-         helm repo update 
-         helm create nodeapp
-         helm install nodeapp nodeapp
+          aws eks update-kubeconfig --name seun_cluster           
+               
+    
+      - name: "Get kubectl"
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "latest"
+        id: install-kubectl
+    
+
+          
+      - name: "install Helm"
+        uses: azure/setup-helm@v4.2.0
+        id: install-helm 
