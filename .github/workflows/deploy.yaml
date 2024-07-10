@@ -35,16 +35,17 @@ jobs:
         run: |
           echo ${{ env.APP_VERSION }}
           sudo docker build -t seun007/cal:${{ env.APP_VERSION }} .
+          
       - name: "Push the image to docker hub" 
         run: |
             docker push seun007/cal:${{ env.APP_VERSION }}
        
-            - name: "Setup AWS"
-            uses: aws-actions/configure-aws-credentials@v4
-            with:
-              aws-region: "us-east-1"
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: "Setup AWS"
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: "us-east-1"
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: "Connect to the cluster"
         run: |
