@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: cal
-        image: seun007/cal:${{ env.APP_VERSION }}
+        image: seun007/cal:${{ .Values.image.tag }}
         # resources:
         #   limits:
         #     memory: "128Mi"
